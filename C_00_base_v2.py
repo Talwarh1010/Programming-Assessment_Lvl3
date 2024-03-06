@@ -106,7 +106,7 @@ class Play:
         for item in range(0, 4):
             self.choice_button = Button(self.choice_frame, text="",
                                         width=28, height=3,
-                                        command=lambda i=item: self.check_answer(self.choice_button["text"]))
+                                        command=lambda i=item: self.check_answer(self.choice_buttons[i]["text"]))
             self.choice_buttons.append(self.choice_button)
             self.choice_button.grid(row=item // 2,
                                     column=item % 2,
@@ -148,13 +148,13 @@ class Play:
         return var_all_flags
 
     def get_question_flags(self):
-        question_flags = random.sample(self.all_flags, 4)
+        self.question_flags = random.sample(self.all_flags, 4)
         self.current_correct_answer = random.randint(0, 3)
 
-        for i, flag in enumerate(question_flags):
+        for i, flag in enumerate(self.question_flags):
             self.choice_buttons[i]['text'] = flag[0]
 
-        flag_image = Image.open(f"Country_Flags/flag_images/{question_flags[self.current_correct_answer][3]}")
+        flag_image = Image.open(f"Country_Flags/flag_images/{self.question_flags[self.current_correct_answer][3]}")
         resized_flag_image = flag_image.resize((390, 250), Image.LANCZOS)
         resized_image = ImageTk.PhotoImage(resized_flag_image)
         self.flag_label.config(image=resized_image)
@@ -166,7 +166,7 @@ class Play:
 
         self.clue_label = Label(self.clue_frame, text="", wrap=350)
         self.clue_label.grid(row=3)
-        clue = f"Clue: The capital is {question_flags[self.current_correct_answer][1]}!"
+        clue = f"                Clue: The capital is {self.question_flags[self.current_correct_answer][1]}!                       "
         self.clue_label.config(text=clue)
 
     def next_question(self):
@@ -198,15 +198,17 @@ class Play:
 
     def check_answer(self, selected_country):
         correct_country = self.all_flags[self.current_correct_answer][0]
+        print(selected_country)
+        print(correct_country)
+        print(self.question_flags[self.current_correct_answer][0])
 
         # Disable all buttons to prevent further clicks
         for button in self.choice_buttons:
             button.config(state=DISABLED)
 
-        if selected_country == correct_country:
+        if selected_country == self.question_flags[self.current_correct_answer][0]:
             # Correct answer
             self.questions_correct.set(self.questions_correct.get() + 1)
-            print(self.questions_correct)
             correct_answers = self.questions_correct.get()  # Get the current number of correct answers
 
             # Update the background color of the results label to green
