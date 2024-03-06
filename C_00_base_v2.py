@@ -4,6 +4,7 @@ import pygame
 from functools import partial  # To prevent unwanted windows
 import csv
 import random
+from PIL import Image, ImageTk
 
 
 class Flags:
@@ -95,25 +96,37 @@ class Play:
         question_flags_list = []
         flag_codes = []
         flag_list = self.get_all_flags()
-        # Get six unique colours
+
+        # Get four unique flags
         while len(question_flags_list) < 4:
-            # choose item
+            # Choose a flag
             chosen_flag = random.choice(flag_list)
-            print(chosen_flag)
             index_chosen = flag_list.index(chosen_flag)
-            chosen_image = chosen_flag[3]
-            # check score is not already in list
+
+            # Check if the flag code is not already in the list
             if chosen_flag[2] not in flag_codes:
-                # add item to rounds list
+                # Add the flag to the question flags list
                 question_flags_list.append(chosen_flag)
                 flag_codes.append(chosen_flag[2])
 
-                # remove item from master list
+                # Remove the flag from the master list
                 self.all_flags.pop(index_chosen)
-                self.img = PhotoImage(file=f"Country_Flags/flag_images/{chosen_image}")
-                self.canvas.create_image(350, 300, image=self.img)
-                self.canvas.create_t
-        return question_flags_list
+
+                # Open the flag image
+                flag = Image.open(f"Country_Flags/flag_images/{chosen_flag[3]}")
+
+                # Resize the image to the desired dimensions
+                resized = flag.resize((300, 225), Image.LANCZOS)
+
+                # Convert the resized image to a PhotoImage object and store a reference
+                self.resized_image = ImageTk.PhotoImage(resized)
+
+                # Create the image on the canvas
+                self.canvas.create_image(350, 300, image=self.resized_image)
+
+        # Create the clue text outside the loop to avoid overlap
+        self.canvas.create_text(350, 470, text=f"Clue: The capital is {chosen_flag[1]}!",
+                                font=("Arial", "15", "bold"))
 
 
 if __name__ == "__main__":
