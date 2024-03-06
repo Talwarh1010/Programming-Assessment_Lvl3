@@ -24,14 +24,22 @@ class Flags:
         self.question_entry = Entry(root, font=("Arial", "20"))
         self.background_canvas.create_window(365, 335, window=self.question_entry)
         self.start_button = Button(root, font=("Arial", "18"), width=21, text="Start!",
-                                   command=self.to_play)  # No need to pass response here
+                                   command=self.validate_and_start)  # Updated command to call validation function
         self.background_canvas.create_window(369, 390, window=self.start_button)
 
-    def to_play(self):
-        num_rounds = self.question_entry.get()  # Get the number of rounds from the entry
+    def validate_and_start(self):
+        num_rounds = self.question_entry.get()
+        if num_rounds.isdigit() and int(num_rounds) > 0:
+            self.to_play(int(num_rounds))
+        else:
+            text = ("Please enter a valid integer greater than 0.")
+            self.question_entry.config(bg="F8CECC")
+            error_label = Label(root, text=text, font=("Arial", "12"), fg="red")
+            error_label.place(x=200, y=450)
+
+    def to_play(self, num_rounds):
         Play(num_rounds)  # Create an instance of Play with the entered number of rounds
-        # Hide root window (ie: hide rounds choice window).
-        root.withdraw()
+        root.withdraw()  # Hide root window (i.e., hide rounds choice window).
 
     def play_music(self):
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
@@ -84,7 +92,8 @@ class Play:
                                               fg="#FFFFFF",
                                               bg=control_buttons[item][0],
                                               text=control_buttons[item][1],
-                                              width=11, font=("Arial", "12", "bold"))
+                                              width=11, font=("Arial", "12", "bold"),
+                                              command=lambda i=item: self.to_do(control_buttons[i][2]))
 
             self.make_control_button.grid(row=0, column=item, padx=5, pady=5)  # Update row to 0
 
@@ -96,7 +105,7 @@ class Play:
         self.to_stats_btn.config(state=DISABLED)
         self.choice_buttons = []
         for item in range(0, 4):
-            self.choice_button = Button(self.choice_frame,text = "",
+            self.choice_button = Button(self.choice_frame, text="",
                                         width=28, height=3,
                                         command=lambda i=item: self.to_compare(self.button_flag_list[i]))
             self.choice_buttons.append(self.choice_button)
@@ -147,7 +156,7 @@ class Play:
             self.choice_buttons[i]['text'] = flag[0]
 
         flag_image = Image.open(f"Country_Flags/flag_images/{question_flags[self.current_correct_answer][3]}")
-        resized_flag_image = flag_image.resize((300, 225), Image.LANCZOS)
+        resized_flag_image = flag_image.resize((390, 250), Image.LANCZOS)
         resized_image = ImageTk.PhotoImage(resized_flag_image)
         self.flag_label.config(image=resized_image)
         self.flag_label.image = resized_image
@@ -155,8 +164,11 @@ class Play:
         # Create the clue text outside the loop to avoid overlap
         self.clue_frame = Frame(self.play_frame)
         self.clue_frame.grid(row=3)
-        self.clue_label = Label(self.clue_frame, text=f"Clue: The capital is {question_flags[self.current_correct_answer][1]}!", wrap=350)
+
+        self.clue_label = Label(self.clue_frame, text="", wrap=350)
         self.clue_label.grid(row=3)
+        clue = f"Clue: The capital is {question_flags[self.current_correct_answer][1]}!"
+        self.clue_label.config(text=clue)
 
     def next_question(self):
         # Update the number of questions played
@@ -174,13 +186,72 @@ class Play:
             new_heading = "Choose - Round {} of " \
                           "{}".format(current_round + 1, how_many)
             self.choose_heading.config(text=new_heading)
-            self.next_button.config(state=E)
         else:
-            self.next_button.config(state = DISABLED)
-            # Show game over or result message
-            pass
+            self.next_button.config(state=DISABLED)
+
+            # Change the color of all choice buttons to grey
+            for button in self.choice_buttons:
+                button.config(bg="#808080", state=DISABLED)
+
+    def to_do(self, action):
+
+        if action == "get help":
+            DisplayHelp(self)
+        elif action == "get stats":
+            print()
+        else:
+            self.close_play()
 
 
+class DisplayHelp:
+    def __init__(self, partner):
+        # setup dialogue box and background colour
+        background = "#ffe6cc"
+        self.help_box = Toplevel()
+        # disable help button
+        partner.to_help_btn.config(state=DISABLED)
+        # If users press cross at top, closes help and
+        # 'releases' help button
+        self.help_box.protocol('WM_DELETE_WINDOW',
+                               partial(self.close_help, partner))
+        self.help_frame = Frame(self.help_box, width=300,
+                                height=200,
+                                bg=background)
+        self.help_frame.grid()
+        self.help_heading_label = Label(self.help_frame,
+                                        bg=background,
+                                        text="Help / Hints",
+                                        font=("Arial", "14", "bold"))
+        self.help_heading_label.grid(row=0)
+        help_text = (""" Your goal in this game is to beat the computer and you have an
+advantage - you get to choose your colour first. The points
+associated with the colours are based on the colour's hex code.\n
+The higher the value of the colour, the greater your score. To see
+your statistics, click on the 'Statistics' button.\n
+Win the game by scoring more than the computer overall. Don't
+be discouraged if you don't win every round, it's your overall
+score that counts. \n
+
+Good luck! Choose carefully.""")
+
+        self.help_text_label = Label(self.help_frame, bg=background,
+                                     text=help_text, wrap=350,
+                                     justify="left")
+        self.help_text_label.grid(row=1, padx=10)
+
+        self.dismiss_button = Button(self.help_frame,
+                                     font=("Arial", "12", "bold"),
+                                     text="Dismiss", bg="#CC6600",
+                                     fg="#FFFFFF",
+                                     command=partial(self.close_help,
+                                                     partner))
+
+        self.dismiss_button.grid(row=2, padx=10, pady=10)
+
+    def close_help(self, partner):
+        # Put help button back to normal...
+        partner.to_help_btn.config(state=NORMAL)
+        self.help_box.destroy()
 
 
 if __name__ == "__main__":
