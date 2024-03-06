@@ -32,8 +32,8 @@ class Flags:
         if num_rounds.isdigit() and int(num_rounds) > 0:
             self.to_play(int(num_rounds))
         else:
-            text = ("Please enter a valid integer greater than 0.")
-            self.question_entry.config(bg="F8CECC")
+            text = "Please enter a valid integer greater than 0."
+            self.question_entry.config(bg="#F8CECC")
             error_label = Label(root, text=text, font=("Arial", "12"), fg="red")
             error_label.place(x=200, y=450)
 
@@ -107,7 +107,7 @@ class Play:
         for item in range(0, 4):
             self.choice_button = Button(self.choice_frame, text="",
                                         width=28, height=3,
-                                        command=lambda i=item: self.to_compare(self.button_flag_list[i]))
+                                        command=lambda i=item: self.check_answer(self.choice_button["text"]))
             self.choice_buttons.append(self.choice_button)
             self.choice_button.grid(row=item // 2,
                                     column=item % 2,
@@ -171,11 +171,9 @@ class Play:
         self.clue_label.config(text=clue)
 
     def next_question(self):
-        # Update the number of questions played
-
-        # Reset buttons
+        # Reset the background color of all buttons to white
         for button in self.choice_buttons:
-            button.config(state=NORMAL)
+            button.config(bg="#FFFFFF", state=NORMAL)
 
         # Load next question if not reached the desired number of questions
         if self.questions_played.get() < self.questions_wanted.get() - 1:
@@ -192,6 +190,34 @@ class Play:
             # Change the color of all choice buttons to grey
             for button in self.choice_buttons:
                 button.config(bg="#808080", state=DISABLED)
+
+    def check_answer(self, selected_country):
+        correct_country = self.all_flags[self.current_correct_answer][0]
+
+        # Disable all buttons to prevent further clicks
+        for button in self.choice_buttons:
+            button.config(state=DISABLED)
+
+        if selected_country == correct_country:
+            # Correct answer
+            self.questions_correct.set(self.questions_correct.get() + 1)
+            self.round_results_label.config(text=f"Answers Correct: {self.questions_correct.get()} / "
+                                                 f"Questions Answered: {self.questions_played.get() + 1}",
+                                            bg="#4CAF50")  # Green color
+
+            self.choice_buttons[self.current_correct_answer].config(bg="#4CAF50")  # Green color
+
+        else:
+            # Incorrect answer
+            self.round_results_label.config(text=f"Answers Correct: {self.questions_correct.get()} / "
+                                                 f"Questions Answered: {self.questions_played.get() + 1}",
+                                            bg="#FF5252")  # Red color
+
+            for i, button in enumerate(self.choice_buttons):
+                if self.all_flags[i][0] == correct_country:
+                    button.config(bg="#4CAF50")  # Green color
+                else:
+                    button.config(bg="#FF5252")  # Red color
 
     def to_do(self, action):
 
