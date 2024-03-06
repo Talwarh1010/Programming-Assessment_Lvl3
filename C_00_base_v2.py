@@ -40,8 +40,6 @@ class Flags:
 class Play:
     def __init__(self, how_many):
         self.play_box = Toplevel(width=600, height=400)
-        self.canvas = Canvas(self.play_box, width=700, height=500)
-        self.canvas.grid()
         self.play_box.protocol('WM_DELETE_WINDOW',
                                partial(self.close_play))
         self.questions_wanted = IntVar()
@@ -61,17 +59,41 @@ class Play:
         self.instructions_label = Label(self.play_frame, text=instructions,
                                         wraplength=350, justify="left")
         self.instructions_label.grid(row=1)
+        self.flag_label = Label(self.play_frame)
+        self.flag_label.grid(row=2)
 
         self.button_flag_list = []
 
         # create colour buttons (in choice_frame)!
         self.choice_frame = Frame(self.play_frame)
-        self.choice_frame.grid(row=2)
+        self.choice_frame.grid(row=4)
         self.choice_button_ref = []
+        control_buttons = [
+            ["#CC6600", "Help", "get help"],
+            ["#004C99", "Statistics", "get stats"],
+            ["#808080", "Start Over", "start over"]]
+
+        self.control_button_ref = []
+
+        for item in range(0, 3):
+            self.make_control_button = Button(self.play_box,
+                                              fg="#FFFFFF",
+                                              bg=control_buttons[item][0],
+                                              text=control_buttons[item][1],
+                                              width=11, font=("Arial", "12", "bold"))
+
+            self.make_control_button.grid(row=4, column=item, padx=5, pady=5)
+
+            self.control_button_ref.append(self.make_control_button)
+
+        # disable help button
+        self.to_help_btn = self.control_button_ref[0]
+        self.to_stats_btn = self.control_button_ref[1]
+        self.to_stats_btn.config(state=DISABLED)
 
         for item in range(0, 4):
             self.choice_button = Button(self.choice_frame,
-                                        width=28, height = 3,
+                                        width=28, height=3,
                                         command=lambda i=item: self.to_compare(self.button_flag_list[i]))
             self.choice_button_ref.append(self.choice_button)
             self.choice_button.grid(row=item // 2,
@@ -115,18 +137,20 @@ class Play:
                 # Open the flag image
                 flag = Image.open(f"Country_Flags/flag_images/{chosen_flag[3]}")
 
-                # Resize the image to the desired dimensions
                 resized = flag.resize((300, 225), Image.LANCZOS)
 
                 # Convert the resized image to a PhotoImage object and store a reference
-                self.resized_image = ImageTk.PhotoImage(resized)
+                resized_image = ImageTk.PhotoImage(resized)
 
-                # Create the image on the canvas
-                self.canvas.create_image(350, 300, image=self.resized_image)
+                # Set the resized image as the flag label's image
+                self.flag_label.config(image=resized_image)
+                self.flag_label.image = resized_image
 
         # Create the clue text outside the loop to avoid overlap
-        self.canvas.create_text(350, 470, text=f"Clue: The capital is {chosen_flag[1]}!",
-                                font=("Arial", "15", "bold"))
+        self.clue_label = Label(self.play_box, text=f"Clue: The capital is {chosen_flag[1]}!", wrap=350)
+        self.clue_label.grid(row = 1)
+
+        return question_flags_list
 
 
 if __name__ == "__main__":
