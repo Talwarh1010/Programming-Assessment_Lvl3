@@ -49,8 +49,7 @@ class Flags:
 class Play:
     def __init__(self, how_many):
         self.play_box = Toplevel(width=600, height=400)
-        self.play_box.protocol('WM_DELETE_WINDOW',
-                               partial(self.close_play))
+        self.play_box.protocol('WM_DELETE_WINDOW', partial(self.close_play))
         self.questions_wanted = IntVar()
         self.questions_wanted.set(how_many)
         self.questions_played = IntVar()
@@ -125,7 +124,7 @@ class Play:
         self.next_button = Button(self.rounds_frame, text="Next Question",
                                   fg="#FFFFFF", bg="#008BFC",
                                   font=("Arial", 11, "bold"),
-                                  width=10, command=self.next_question)
+                                  width=14, command=self.next_question, state=DISABLED)
         self.next_button.grid(row=0, column=5)
 
     def update_round_heading(self):
@@ -184,12 +183,18 @@ class Play:
             new_heading = "Choose - Round {} of " \
                           "{}".format(current_round + 1, how_many)
             self.choose_heading.config(text=new_heading)
+
+            # Disable the Next button
+            self.next_button.config(state=DISABLED)
         else:
             self.next_button.config(state=DISABLED)
 
             # Change the color of all choice buttons to grey
             for button in self.choice_buttons:
                 button.config(bg="#808080", state=DISABLED)
+
+            # Update the background color of the results label
+            self.round_results_label.config(bg="#FFF2CC")
 
     def check_answer(self, selected_country):
         correct_country = self.all_flags[self.current_correct_answer][0]
@@ -201,23 +206,31 @@ class Play:
         if selected_country == correct_country:
             # Correct answer
             self.questions_correct.set(self.questions_correct.get() + 1)
-            self.round_results_label.config(text=f"Answers Correct: {self.questions_correct.get()} / "
-                                                 f"Questions Answered: {self.questions_played.get() + 1}",
-                                            bg="#4CAF50")  # Green color
+            print(self.questions_correct)
+            correct_answers = self.questions_correct.get()  # Get the current number of correct answers
+
+            # Update the background color of the results label to green
+            self.round_results_label.config(bg="#4CAF50", text=f"Answers Correct: {correct_answers} / "
+                                                               f"Questions Answered: {self.questions_played.get() + 1}")  # Green color
 
             self.choice_buttons[self.current_correct_answer].config(bg="#4CAF50")  # Green color
-
         else:
             # Incorrect answer
-            self.round_results_label.config(text=f"Answers Correct: {self.questions_correct.get()} / "
-                                                 f"Questions Answered: {self.questions_played.get() + 1}",
-                                            bg="#FF5252")  # Red color
+            # Update the background color of the results label to red
+            self.round_results_label.config(bg="#FF5252")  # Red color
 
             for i, button in enumerate(self.choice_buttons):
                 if self.all_flags[i][0] == correct_country:
                     button.config(bg="#4CAF50")  # Green color
                 else:
                     button.config(bg="#FF5252")  # Red color
+
+        # Update the text of the results label after each answer
+        self.round_results_label.config(text=f"Answers Correct: {self.questions_correct.get()} / "
+                                             f"Questions Answered: {self.questions_played.get() + 1}")
+
+        # Enable the Next button after answering
+        self.next_button.config(state=NORMAL)
 
     def to_do(self, action):
 
