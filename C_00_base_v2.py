@@ -66,7 +66,7 @@ class Play:
 
         # create colour buttons (in choice_frame)!
         self.choice_frame = Frame(self.play_frame)
-        self.choice_frame.grid(row=4)
+        self.choice_frame.grid(row=3)
         self.choice_button_ref = []
         control_buttons = [
             ["#CC6600", "Help", "get help"],
@@ -75,14 +75,14 @@ class Play:
 
         self.control_button_ref = []
 
-        for item in range(0, 3):
+        for item in range(0, ):
             self.make_control_button = Button(self.play_box,
                                               fg="#FFFFFF",
                                               bg=control_buttons[item][0],
                                               text=control_buttons[item][1],
                                               width=11, font=("Arial", "12", "bold"))
 
-            self.make_control_button.grid(row=4, column=item, padx=5, pady=5)
+            self.make_control_button.grid(row=5, column=item, padx=5, pady=5)
 
             self.control_button_ref.append(self.make_control_button)
 
@@ -147,8 +147,10 @@ class Play:
                 self.flag_label.image = resized_image
 
         # Create the clue text outside the loop to avoid overlap
-        self.clue_label = Label(self.play_box, text=f"Clue: The capital is {chosen_flag[1]}!", wrap=350)
-        self.clue_label.grid(row = 1)
+        self.clue_frame = Frame(self.play_frame)
+        self.clue_frame.grid(row=4)
+        self.clue_label = Label(self.clue_frame, text=f"Clue: The capital is {chosen_flag[1]}!", wrap=350)
+        self.clue_label.grid(row=1)
 
         return question_flags_list
 
