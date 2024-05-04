@@ -1,19 +1,15 @@
-import csv
-import random
-import tkinter
+
 from tkinter import *
 import pygame
-from functools import partial  # To prevent unwanted windows
 import csv
 import random
 from PIL import Image, ImageTk
-from tkinter import messagebox
-from datetime import date
-import re
 
-play_box = Toplevel(width=600, height=400)
-self.flag_label = Label(self.play_frame)
-        self.flag_label.grid(row=2)
+root = Tk()
+root.geometry("600x400")
+pygame.mixer.init()
+flag_label = Label(root)
+flag_label.grid(row=2)
 
 with open("Country_Flags/country_flags.csv", "r", encoding="utf-8") as file:
     var_all_flags = list(csv.reader(file, delimiter=","))
@@ -29,3 +25,8 @@ resized_flag_image = flag_image.resize((390, 250), Image.LANCZOS)
 resized_image = ImageTk.PhotoImage(resized_flag_image)
 flag_label.config(image=resized_image)
 flag_label.image = resized_image
+
+
+if __name__ == "__main__":
+    root.title("Guess The Flag!")
+    root.mainloop()
