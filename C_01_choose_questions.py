@@ -26,60 +26,11 @@ class Flags:
 
     def validate_and_start(self):
         num_questions = self.question_entry.get()
-        self.error_label = Label(root, bg="white",
-                                 text="                                                                               ")
-        if num_questions.isdigit() and int(num_questions) > 0:
-            self.to_play(int(num_questions))
-            self.question_entry.config(bg="white")
-            self.question_entry.delete(0, END)
-
-
-        else:
-            text = "Please enter a valid integer greater than 0."
-            self.question_entry.config(bg="#F8CECC")
-            self.error_label.config(text=text, font=("Arial", "10"), fg="red", bg="white")
-        self.error_label.place(x=243, y=350)
-
-    def to_play(self, num_questions):
-        Play(num_questions)  # Create an instance of Play with the entered number of rounds
-        root.withdraw()  # Hide root window (i.e., hide rounds choice window).
+        print(f"You chose to play {num_questions} questions")
 
     def play_music(self):
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
         pygame.mixer.music.play(loops=100)
-
-
-class Play:
-    def __init__(self, how_many):
-        self.play_box = Toplevel(width=600, height=400)
-        self.play_box.protocol('WM_DELETE_WINDOW', partial(self.close_play))
-        self.questions_wanted = IntVar()
-        self.questions_wanted.set(how_many)
-        self.play_frame = Frame(self.play_box, padx=10, pady=10)
-        self.play_frame.grid()
-        self.update_round_heading()
-
-        self.start_over_button = Button(self.play_frame,
-                                        fg="#FFFFFF",
-                                        bg="#808080",
-                                        text="Start Over",
-                                        width=11, font=("Arial", "12", "bold"),
-                                        command=self.close_play)
-
-        self.start_over_button.grid(row=1, padx=5, pady=5, columnspan=5)
-
-    def update_round_heading(self):
-        rounds_heading = f"Choose - Question 1 of {self.questions_wanted.get()}"
-        self.choose_heading = Label(self.play_frame, text=rounds_heading,
-                                    font=("Arial", "16", "bold")
-                                    )
-        self.choose_heading.grid(row=0)
-
-    def close_play(self):
-        # reshow root (ie: choose rounds) and end current
-        # game / allow new game to start
-        root.deiconify()
-        self.play_box.destroy()
 
 
 if __name__ == "__main__":
