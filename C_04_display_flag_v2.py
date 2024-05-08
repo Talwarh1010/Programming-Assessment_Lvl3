@@ -22,8 +22,6 @@ for item in range(0, 20):
     resized_image = ImageTk.PhotoImage(resized_flag_image)
     flag_label.config(image=resized_image)
     flag_label.image = resized_image
-    clue_label = Label(root, text=f"Clue: The capital is {question_flags[current_correct_answer][1]}!", wrap=350)
-    clue_label.grid(row=3)
 
     if __name__ == "__main__":
         root.title("Guess The Flag!")
