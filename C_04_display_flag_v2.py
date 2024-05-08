@@ -18,7 +18,7 @@ for item in range(0, 20):
     question_flags = random.sample(var_all_flags, 4)
     current_correct_answer = random.randint(0, 3)
     flag_image = Image.open(f"Country_Flags/flag_images/{question_flags[current_correct_answer][3]}")
-    resized_flag_image = flag_image
+    resized_flag_image = flag_image.resize((390, 250), Image.LANCZOS)
     resized_image = ImageTk.PhotoImage(resized_flag_image)
     flag_label.config(image=resized_image)
     flag_label.image = resized_image
