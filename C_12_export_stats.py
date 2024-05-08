@@ -70,11 +70,11 @@ class DisplayStats:
     def __init__(self, partner):
         self.partner = partner  # Store the instance of Play class
 
-        questions_answered = 11
+        questions_answered = 10
         correct_numbers = 6
         user_answers = [('Sudan', 'Qatar'), ('Aruba', 'Aruba'), ('Somalia', 'Suriname'), ('Libya', 'Kosovo')
             , ('Moldova', 'Moldova'), ('Montenegro', 'Montenegro'), ('Andorra', 'Andorra'),
-                        ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast'), ('China', 'Vietnam')]
+                        ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast')]
 
         # setup dialogue box and background colour
         stats_bg_colour = "#DAE8FC"
@@ -237,12 +237,12 @@ class DisplayStats:
 
     def write_to_file(self, filename):
         # Retrieve data
-        questions_answered = 11
+        questions_answered = 10
         correct_numbers = 6
         user_answers = [('Sudan', 'Qatar'), ('Aruba', 'Aruba'), ('Somalia', 'Suriname'), ('Libya', 'Kosovo')
             , ('Moldova', 'Moldova'), ('Montenegro', 'Montenegro'), ('Andorra', 'Andorra'),
-                        ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast'),
-                        ('China', 'Vietnam')]
+                        ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast')]
+
         # Prepare content to write to file
         heading = "**** Game Statistics ****"
         generated_date = self.get_date()
@@ -269,9 +269,10 @@ class DisplayStats:
             file.write(data + "\n")
 
     # Closes stats dialogue (used by button and x at top of dialogue)
-    def close_stats(self, partner):
+    # Closes stats dialogue (used by button and x at top of dialogue)
+    def close_stats(self):
         # Put stats button back to normal...
-        partner.to_stats_btn.config(state=NORMAL)
+        self.partner.control_button_ref[1].config(state=NORMAL)
         self.stats_box.destroy()
 
 
