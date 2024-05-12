@@ -72,9 +72,6 @@ class DisplayStats:
         correct_numbers = result_data.count('Correct')
         user_answers = [('Sudan', 'Qatar'), ('\ufeffAruba', '\ufeffAruba'), ('Somalia', 'Suriname'), ('Libya', 'Kosovo')
             , ('Moldova', 'Moldova'), ('Montenegro', 'Montenegro'), ('Andorra', 'Andorra'),
-                        ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast'),
-                        ('Sudan', 'Qatar'), ('\ufeffAruba', '\ufeffAruba'), ('Somalia', 'Suriname'), ('Libya', 'Kosovo')
-            , ('Moldova', 'Moldova'), ('Montenegro', 'Montenegro'), ('Andorra', 'Andorra'),
                         ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast')]
 
         # setup dialogue box and background colour
@@ -99,7 +96,9 @@ class DisplayStats:
         self.stats_text_label = Label(self.stats_frame, bg=stats_bg_colour,
                                       text=stats_text, wrap=350,
                                       justify="left")
-
+        if len(user_answers) > 10:
+            self.stats_text_label.config(text="Here are your game statistics (Note: The question history only shows "
+                                              "your first 10 questions")
         self.stats_text_label.grid(row=1, columnspan=4, padx=10, pady=5)
         self.data_frame = Frame(self.stats_frame, bg=stats_bg_colour, borderwidth=1, relief="solid")
         self.data_frame.grid(row=2, columnspan=4, padx=10, pady=10)
@@ -112,7 +111,7 @@ class DisplayStats:
             heading_label.grid(row=0, column=i, padx=5, pady=5, sticky="w")
 
         # Populate the data for each question
-        for i, answer in enumerate(user_answers):
+        for i, answer in enumerate(user_answers[:10]):
             question_number = i + 1
             flag_shown = answer[0]
             user_answer = answer[1]
