@@ -205,6 +205,7 @@ class Play:
             # Disable the Next button
             self.next_button.config(state=DISABLED, bg="#808080", text="Goodbye")
 
+
     def to_do(self, action):
         if action == "get help":
             print("You chose to get help")

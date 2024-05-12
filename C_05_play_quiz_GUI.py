@@ -203,7 +203,7 @@ class Play:
             self.next_button.config(state=NORMAL)
         else:
             # Disable the Next button
-            self.next_button.config(state=DISABLED, bg="#808080", text="Goodbye")
+            self.next_button.config(state=DISABLED)
 
     def to_do(self, action):
         if action == "get help":
