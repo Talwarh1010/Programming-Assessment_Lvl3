@@ -119,8 +119,8 @@ class Play:
         self.play_box.destroy()
 
     def get_all_flags(self):
-        file = open("Country_Flags/country_flags.csv", "r")
-        var_all_flags = list(csv.reader(file, delimiter=","))
+        with open("Country_Flags/country_flags.csv", "r", encoding="utf-8") as file:
+            var_all_flags = list(csv.reader(file, delimiter=","))
         file.close()
         # removes first entry in list (ie: the header row).
         return var_all_flags
