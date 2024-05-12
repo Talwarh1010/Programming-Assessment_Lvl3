@@ -26,21 +26,19 @@ class Flags:
 
     def validate_and_start(self):
         num_questions = self.question_entry.get()
-        self.error_label = Label(root, bg="white", text=" " * 79)
+        self.error_label = Label(root, bg="white",
+                                 text="                                                                               ")
+        if num_questions.isdigit() and int(num_questions) > 0:
+            self.to_play(int(num_questions))
+            self.question_entry.config(bg="white")
+            self.question_entry.delete(0, END)
 
-        try:
-            num_questions = int(num_questions)
-            if num_questions > 0:
-                self.to_play(num_questions)
-                self.question_entry.delete(0, END)
-            else:
-                text = "Please enter an integer greater than 0."
-                self.error_label.config(text=text, font=("Arial", "10"), fg="red", bg="white")
-                self.error_label.place(x=243, y=350)
-        except ValueError:
+
+        else:
             text = "Please enter a valid integer greater than 0."
+            self.question_entry.config(bg="#F8CECC")
             self.error_label.config(text=text, font=("Arial", "10"), fg="red", bg="white")
-            self.error_label.place(x=243, y=350)
+        self.error_label.place(x=243, y=350)
 
     def to_play(self, num_questions):
         Play(num_questions)  # Create an instance of Play with the entered number of rounds
