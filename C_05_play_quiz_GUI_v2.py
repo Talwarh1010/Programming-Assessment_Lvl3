@@ -142,12 +142,12 @@ class Play:
         self.clue_frame = Frame(self.play_frame)
         self.clue_frame.grid(row=3)
 
-        self.clue_label = Label(self.clue_frame, text="", wrap=350)
+        self.clue_label = Label(self.clue_frame,
+                                text=f"Clue: The capital is {self.question_flags[self.current_correct_answer][1]}!")
         self.clue_label.grid(row=3)
-        clue = f"Clue: The capital is {self.question_flags[self.current_correct_answer][1]}!"
-        self.clue_label.config(text=clue)
 
     def next_question(self):
+        self.clue_label.config(text="")
         # Reset the background color of all buttons to white
         for button in self.choice_buttons:
             button.config(bg="#FFFFFF", state=NORMAL)
