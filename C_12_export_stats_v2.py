@@ -208,11 +208,11 @@ class DisplayStats:
             # Write data to file
             self.write_to_file(filename)
             # Provide feedback to user
-            self.stats_text_label.config(text=success, fg="dark green", bg="#DAE8FC")
+            self.save_instructions_label.config(text=success, fg="dark green", bg="#DAE8FC")
             self.filename_entry.config(bg="#90ee90")
         else:
             error_message = f"Error: {filename_ok}. Use letters / numbers / underscores only."
-            self.stats_text_label.config(text=error_message, fg="dark red", bg="#DAE8FC")
+            self.save_instructions_label.config(text=error_message, fg="dark red", bg="#DAE8FC")
             self.filename_entry.config(bg="#FF7F7F")
 
     def get_date(self):
