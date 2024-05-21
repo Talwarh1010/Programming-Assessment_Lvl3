@@ -1,10 +1,17 @@
+# To create all GUI
 from tkinter import *
+# Load background music
 import pygame
 from functools import partial  # To prevent unwanted windows
+# Get all data from Excel file
 import csv
+# To choose random flag image to be shown
 import random
+# Resize flag image
 from PIL import Image, ImageTk
+# Get date for file name
 from datetime import date
+# For regular expressions
 import re
 
 
@@ -73,8 +80,9 @@ class Flags:
 
 class Play:
     def __init__(self, how_many):
-        # Initialize the quiz window
+        # Initialize the quiz play window
         self.play_box = Toplevel(width=600, height=400)
+        # Close play box when close button or "X" button in the top-right corner of the window is pressed.
         self.play_box.protocol('WM_DELETE_WINDOW', partial(self.close_play))
 
         # Initialize variables to keep track of quiz progress
@@ -84,6 +92,7 @@ class Play:
         self.questions_played.set(0)
         self.questions_correct = IntVar()
         self.questions_correct.set(0)
+        # List to hold user answers
         self.user_answers = []
 
         # Load all flag data from CSV file
@@ -93,6 +102,7 @@ class Play:
         self.play_frame = Frame(self.play_box, padx=10, pady=10)
         self.play_frame.grid()
 
+        # Starting heading of the quiz
         question_heading = f"Choose - Question 1 of {self.questions_wanted.get()}"
         self.choose_heading = Label(self.play_frame, text=question_heading,
                                     font=("Arial", "16", "bold")
@@ -108,12 +118,13 @@ class Play:
         self.flag_label = Label(self.play_frame)
         self.flag_label.grid(row=2)
 
-        # Create buttons for flaag choices
+        # Create buttons for flag choices
         self.choice_frame = Frame(self.play_frame)
         self.choice_frame.grid(row=4)
         self.choice_button_ref = []
         self.control_frame = Frame(self.play_frame)
         self.control_frame.grid(row=6)
+        # Create list for control buttons. Info includes colour, text and function name.
         control_buttons = [
             ["#CC6600", "Help", "get help"],
             ["#004C99", "Statistics", "get stats"],
@@ -130,33 +141,50 @@ class Play:
                                               width=11, font=("Arial", "12", "bold"),
                                               command=lambda i=item: self.to_do(control_buttons[i][2]))
 
-            self.make_control_button.grid(row=0, column=item, padx=5, pady=5)  # Update row to 0
+            self.make_control_button.grid(row=0, column=item, padx=5, pady=5)
 
             self.control_button_ref.append(self.make_control_button)
 
-        # disable help button
+        # Disable the "Help" button and store a reference to it
         self.to_help_btn = self.control_button_ref[0]
+        # Store a reference to the "Statistics" button
         self.to_stats_btn = self.control_button_ref[1]
+        # Disable the "Statistics" button
         self.to_stats_btn.config(state=DISABLED)
+
+        # Initialize an empty list to store the choice buttons
         self.choice_buttons = []
+
+        # Create four choice buttons for the user to select their answer
         for item in range(0, 4):
+            # Create a Button widget for each choice
             self.choice_button = Button(self.choice_frame, text="",
                                         width=28, height=3,
                                         command=lambda i=item: self.check_answer(self.choice_buttons[i]["text"]))
+
+            # Append the created Button to the choice_buttons list
             self.choice_buttons.append(self.choice_button)
+
+            # Place the Button in the choice_frame grid
             self.choice_button.grid(row=item // 2,
                                     column=item % 2,
                                     padx=5, pady=5)
+
+        # Get the flags for the current question
         self.get_question_flags()
 
+        # Create a frame to display the score information
         self.score_frame = Frame(self.play_frame)
         self.score_frame.grid(row=5, pady=5)
+
+        # Label to display the current score information
         self.question_results_label = Label(self.score_frame, text=f"Answers Correct: Questions Answered:",
                                             width=36, bg="#FFF2CC",
                                             font=("Arial", 10),
                                             pady=5)
         self.question_results_label.grid(row=0, column=0, padx=5)
 
+        # Button to proceed to the next question (disabled at the start of each question
         self.next_button = Button(self.score_frame, text="Next Question",
                                   fg="#FFFFFF", bg="#008BFC",
                                   font=("Arial", 11, "bold"),
@@ -201,8 +229,9 @@ class Play:
         # Reset the background color of all buttons to white
         for button in self.choice_buttons:
             button.config(bg="#FFFFFF", state=NORMAL)
-
+        # Change heading of the question if the number of questions played has not exceeded the questions answered.
         if self.questions_played.get() < self.questions_wanted.get():
+            # Display flag and clue
             self.get_question_flags()
             new_heading = "Choose - Question {} of " \
                           "{}".format(self.questions_played.get() + 1, self.questions_wanted.get())
@@ -225,16 +254,17 @@ class Play:
             # Update the background color of the results label to green
             self.question_results_label.config(bg="#4CAF50", text=f"Answers Correct: {self.questions_correct.get()} / "
                                                                   f"Questions Answered: {self.questions_played.get()}")
-
+            # Make correct answer green
             self.choice_buttons[self.current_correct_answer].config(bg="#4CAF50")  # Green color
         else:
             # Incorrect answer
             # Update the background color of the results label to red
             self.question_results_label.config(bg="#FF5252")  # Red color
-
             for i, button in enumerate(self.choice_buttons):
+                # Make correct answer green
                 if self.all_flags[i][0] == self.correct_country:
                     button.config(bg="#4CAF50")  # Green color
+                    # Make all incorrect choices red
                 else:
                     button.config(bg="#FF5252")  # Red color
                 # Disable all buttons to prevent further clicks
@@ -248,18 +278,17 @@ class Play:
         if self.questions_played.get() < self.questions_wanted.get():
             self.next_button.config(state=NORMAL)
         else:
-            # Disable the Next button
+            # Disable the Next button and change its text.
             self.next_button.config(state=DISABLED, bg="#808080", text="Goodbye")
-            self.control_button_ref[2].config(text="Try Again", bg="#009900")
+            # Change text and colour of Start Over button after quiz has finished
+            self.control_button_ref[2].config(text="New Quiz", bg="#009900")
 
     def to_do(self, action):
         # Perform actions based on button clicks (Help, Statistics, Start Over)
         if action == "get help":
             DisplayHelp(self)
         elif action == "get stats":
-            DisplayStats(self, self.question_flags[self.current_correct_answer][0], self.questions_correct.get(),
-                         self.questions_played.get(),
-                         self.user_answers)
+            DisplayStats(self, self.questions_correct.get(), self.questions_played.get(), self.user_answers)
         else:
             self.close_play()
 
@@ -306,6 +335,7 @@ class DisplayHelp:
                                      justify="left")
         self.help_text_label.grid(row=1, padx=10)
 
+        # Create dismiss button to exit help window
         self.dismiss_button = Button(self.help_frame,
                                      font=("Arial", "12", "bold"),
                                      text="Dismiss", bg="#CC6600",
@@ -315,6 +345,7 @@ class DisplayHelp:
 
         self.dismiss_button.grid(row=2, padx=10, pady=10)
 
+    # Close help window.
     def close_help(self, partner):
         # Put help button back to normal...
         partner.to_help_btn.config(state=NORMAL)
@@ -322,9 +353,8 @@ class DisplayHelp:
 
 
 class DisplayStats:
-    def __init__(self, partner, correct_answers, correct_numbers, questions_answered, user_answers):
-        # Other initialization code remains the same...
-        self.correct_answers = correct_answers
+    def __init__(self, partner, correct_numbers, questions_answered, user_answers):
+        # Initialise variables
         self.correct_numbers = correct_numbers
         self.questions_answered = questions_answered
         self.user_answers = user_answers
