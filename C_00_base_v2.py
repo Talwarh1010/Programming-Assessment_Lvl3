@@ -209,11 +209,10 @@ class Play:
             self.choice_buttons[i]['text'] = flag[0]
 
         # resize flag image so that it fits in play GUI
-        flag_image = Image.open(f"Country_Flags/flag_images/{self.question_flags[self.current_correct_answer][3]}")
-        resized_flag_image = flag_image.resize((390, 250), Image.LANCZOS)
-        resized_image = ImageTk.PhotoImage(resized_flag_image)
-        self.flag_label.config(image=resized_image)
-        self.flag_label.image = resized_image
+        flag_image = Image.open(f"Country_Flags/flag_images/flag_images/{self.question_flags[self.current_correct_answer][3]}")
+        flag_image = ImageTk.PhotoImage(flag_image)
+        self.flag_label.config(image=flag_image)
+        self.flag_label.image = flag_image
 
         # Display clue for the correct country
         self.clue_frame = Frame(self.play_frame)
@@ -248,7 +247,7 @@ class Play:
         self.to_stats_btn.config(state=NORMAL)
 
         if selected_country == self.question_flags[self.current_correct_answer][0]:
-            # Correct answer
+            # Correct answer (add 1 point)
             self.questions_correct.set(self.questions_correct.get() + 1)
 
             # Update the background color of the results label to green
@@ -267,8 +266,8 @@ class Play:
                     # Make all incorrect choices red
                 else:
                     button.config(bg="#FF5252")  # Red color
-                # Disable all buttons to prevent further clicks
-                button.config(state=DISABLED)
+        # Disable all buttons to prevent further clicks
+        [button.config(state=DISABLED) for button in self.choice_buttons]
 
         # Update the text of the results label after each answer
         self.question_results_label.config(text=f"Answers Correct: {self.questions_correct.get()} / "
@@ -382,6 +381,7 @@ class DisplayStats:
         self.stats_text_label = Label(self.stats_frame, bg=stats_bg_colour,
                                       text=stats_text, wraplength=350,
                                       justify="left")
+        # If the user answers more than 10 questions, display a note
         if len(user_answers) > 10:
             self.stats_text_label.config(text="Here are your quiz statistics (Note: The question history only shows "
                                               "your first 10 questions")
@@ -402,7 +402,7 @@ class DisplayStats:
             flag_shown = answer[0]
             user_answer = answer[1]
             result = "Correct" if user_answer == flag_shown else "Incorrect"
-
+            # Creating labels to create a table of question history (Question number, flag, user answer, and result)
             question_number_label = Label(self.data_frame, text=question_number,
                                           bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour,
                                           width=20, anchor="w")
@@ -425,13 +425,14 @@ class DisplayStats:
         self.scores_frame = Frame(self.stats_frame, bg=stats_bg_colour, borderwidth=1, relief="solid")
         self.scores_frame.grid(row=3, column=0, padx=10, pady=10)
 
-        # Create labels for headings and corresponding information
+        # Create labels for headings and scores (Correct answers, total questions, percentage and feedback)
         row_names = ["Correct answers", "Total questions", "Percentage", "Feedback"]
+        # If percentage is more than or equal to 70%, display 'Excellent!' otherwise 'Keep Practicing'
         data_values = [correct_numbers, questions_answered,
                        "{:.2f}%".format(
                            (correct_numbers / questions_answered) * 100 if questions_answered != 0 else 0),
                        "Excellent!" if (correct_numbers / questions_answered) * 100 >= 70 else "Keep Practicing!"]
-
+        # Create table to display scores and percentage
         for i, name in enumerate(row_names):
             heading_label = Label(self.scores_frame, text=name, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour,
                                   width=15,
@@ -442,9 +443,11 @@ class DisplayStats:
                                width=20, height=1, anchor="w")
             data_label.grid(row=i, column=1, padx=5, pady=5, sticky="w")
 
+        # Create frame for export part of statistics
         self.filename_entry_frame = Frame(self.stats_frame, bg=stats_bg_colour, relief="solid")
         self.filename_entry_frame.grid(row=3, column=2, columnspan=5, padx=10, pady=10)
 
+        # Instructions to export statistics
         save_text = "Either choose a custom file name (and push " \
                     "<Export>) or simply push <Export> to save your " \
                     "statistics in a text file. If the " \
@@ -456,19 +459,23 @@ class DisplayStats:
                                              padx=10, pady=10)
         self.save_instructions_label.grid(row=2, column=4)
 
+        # Create entry box so user can enter filename
         self.filename_entry = Entry(self.filename_entry_frame,
                                     font=("Arial", "23"),
                                     bg="#ffffff", width=18)
         self.filename_entry.grid(row=4, column=4, padx=10, pady=10)
+
+        # Frame to keep dismiss and export button
         self.button_frame = Frame(self.stats_frame, bg=stats_bg_colour)
         self.button_frame.grid(row=4, columnspan=5, )
+        # Export button
         self.export_button = Button(self.button_frame,
                                     font=("Arial", "12", "bold"),
                                     text="Export", bg="#004C99",
                                     fg="#FFFFFF", width=12,
                                     command=self.make_file)
         self.export_button.grid(row=6, column=3, padx=5, pady=5)
-
+        # Dismiss button
         self.dismiss_button = Button(self.button_frame,
                                      font=("Arial", "12", "bold"),
                                      text="Dismiss", bg="#CC6600",
@@ -498,11 +505,14 @@ class DisplayStats:
             # Provide feedback to user
             self.save_instructions_label.config(text=success, fg="dark green", bg="#DAE8FC")
             self.filename_entry.config(bg="#90ee90")
+
+        # If user enters invalid characters in filename (change colour to dark red and display error)
         else:
             error_message = f"Error: {filename_ok}. Use letters / numbers / underscores only."
             self.save_instructions_label.config(text=error_message, fg="dark red", bg="#DAE8FC")
             self.filename_entry.config(bg="#FF7F7F")
 
+    # Function to get the current date
     @staticmethod
     def get_date():
         today = date.today()
@@ -524,6 +534,7 @@ class DisplayStats:
             break
         return problem
 
+    # Function that writes all statistics to a text file
     def write_to_file(self, filename):
         # Retrieve data
         correct_numbers = self.correct_numbers
@@ -543,6 +554,7 @@ class DisplayStats:
                f"{'Excellent!' if (correct_numbers / questions_answered) * 100 >= 70 else 'Keep Practicing!'}\n" \
                "\nUser Answers:\n"
 
+        # Loop to display all question history as string to display in text file
         for i, answer in enumerate(user_answers, start=1):
             question_number = f"Question {i}:"
             flag_shown = f"Flag Shown: {answer[0]}"
@@ -569,8 +581,6 @@ if __name__ == "__main__":
     root.geometry("720x540")
     pygame.mixer.init()
     root.title("Guess The Flag!")
-
     flags_app = Flags(root)  # Pass start_window as an argument
-    flags_app.play_music()  # Call the play method
-
+    flags_app.play_music()  # Play background music
     root.mainloop()
