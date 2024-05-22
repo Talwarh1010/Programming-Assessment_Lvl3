@@ -79,21 +79,21 @@ class Flags:
 
 
 class Play:
-    def __init__(self, how_many):
+    def __init__(self, num_questions):
         # Initialize the quiz play window
         self.play_box = Toplevel(width=600, height=400)
         # Close play box when close button or "X" button in the top-right corner of the window is pressed.
         self.play_box.protocol('WM_DELETE_WINDOW', partial(self.close_play))
 
         # Initialize variables to keep track of quiz progress
-        self.questions_wanted = IntVar()
-        self.questions_wanted.set(how_many)
-        self.questions_played = IntVar()
-        self.questions_played.set(0)
+        self.num_questions_wanted = IntVar()
+        self.num_questions_wanted.set(num_questions)
+        self.questions_answered = IntVar()
+        self.questions_answered.set(0)
         self.questions_correct = IntVar()
         self.questions_correct.set(0)
         # List to hold user answers
-        self.user_answers = []
+        self.user_response_history = []
 
         # Load all flag data from CSV file
         self.all_flags = self.get_all_flags()
@@ -103,7 +103,7 @@ class Play:
         self.play_frame.grid()
 
         # Starting heading of the quiz
-        question_heading = f"Choose - Question 1 of {self.questions_wanted.get()}"
+        question_heading = f"Choose - Question 1 of {self.num_questions_wanted.get()}"
         self.choose_heading = Label(self.play_frame, text=question_heading,
                                     font=("Arial", "16", "bold")
                                     )
@@ -132,7 +132,6 @@ class Play:
 
         # Create control buttons (Help, Statistics, Start Over)
         self.control_button_ref = []
-
         for item in range(0, 3):
             self.make_control_button = Button(self.control_frame,
                                               fg="#FFFFFF",
@@ -153,17 +152,17 @@ class Play:
         self.to_stats_btn.config(state=DISABLED)
 
         # Initialize an empty list to store the choice buttons
-        self.choice_buttons = []
+        self.answer_choice_buttons = []
 
         # Create four choice buttons for the user to select their answer
         for item in range(0, 4):
             # Create a Button widget for each choice
             self.choice_button = Button(self.choice_frame, text="",
                                         width=28, height=3,
-                                        command=lambda i=item: self.check_answer(self.choice_buttons[i]["text"]))
+                                        command=lambda i=item: self.check_answer(self.answer_choice_buttons[i]["text"]))
 
-            # Append the created Button to the choice_buttons list
-            self.choice_buttons.append(self.choice_button)
+            # Append the created Button to the answer_choice_buttons list
+            self.answer_choice_buttons.append(self.choice_button)
 
             # Place the Button in the choice_frame grid
             self.choice_button.grid(row=item // 2,
@@ -206,7 +205,7 @@ class Play:
 
         # Display flag images and country choices
         for i, flag in enumerate(self.question_flags):
-            self.choice_buttons[i]['text'] = flag[0]
+            self.answer_choice_buttons[i]['text'] = flag[0]
 
         # resize flag image so that it fits in play GUI
         flag_image = Image.open(f"Country_Flags/flag_images/flag_images/{self.question_flags[self.current_correct_answer][3]}")
@@ -226,14 +225,14 @@ class Play:
         # Load next question if not reached the desired number of questions
         self.clue_label.config(text="")
         # Reset the background color of all buttons to white
-        for button in self.choice_buttons:
+        for button in self.answer_choice_buttons:
             button.config(bg="#FFFFFF", state=NORMAL)
         # Change heading of the question if the number of questions played has not exceeded the questions answered.
-        if self.questions_played.get() < self.questions_wanted.get():
+        if self.questions_answered.get() < self.num_questions_wanted.get():
             # Display flag and clue
             self.get_question_flags()
             new_heading = "Choose - Question {} of " \
-                          "{}".format(self.questions_played.get() + 1, self.questions_wanted.get())
+                          "{}".format(self.questions_answered.get() + 1, self.num_questions_wanted.get())
             self.choose_heading.config(text=new_heading)
 
             # Disable the Next button
@@ -241,9 +240,9 @@ class Play:
 
     def check_answer(self, selected_country):
         # Check the selected answer and update quiz statistics
-        self.questions_played.set(self.questions_played.get() + 1)
+        self.questions_answered.set(self.questions_answered.get() + 1)
         self.correct_country = self.all_flags[self.current_correct_answer][0]
-        self.user_answers.append((self.question_flags[self.current_correct_answer][0], selected_country))
+        self.user_response_history.append((self.question_flags[self.current_correct_answer][0], selected_country))
         self.to_stats_btn.config(state=NORMAL)
 
         if selected_country == self.question_flags[self.current_correct_answer][0]:
@@ -252,14 +251,14 @@ class Play:
 
             # Update the background color of the results label to green
             self.question_results_label.config(bg="#4CAF50", text=f"Answers Correct: {self.questions_correct.get()} / "
-                                                                  f"Questions Answered: {self.questions_played.get()}")
+                                                                  f"Questions Answered: {self.questions_answered.get()}")
             # Make correct answer green
-            self.choice_buttons[self.current_correct_answer].config(bg="#4CAF50")  # Green color
+            self.answer_choice_buttons[self.current_correct_answer].config(bg="#4CAF50")  # Green color
         else:
             # Incorrect answer
             # Update the background color of the results label to red
             self.question_results_label.config(bg="#FF5252")  # Red color
-            for i, button in enumerate(self.choice_buttons):
+            for i, button in enumerate(self.answer_choice_buttons):
                 # Make correct answer green
                 if self.all_flags[i][0] == self.correct_country:
                     button.config(bg="#4CAF50")  # Green color
@@ -267,14 +266,14 @@ class Play:
                 else:
                     button.config(bg="#FF5252")  # Red color
         # Disable all buttons to prevent further clicks
-        [button.config(state=DISABLED) for button in self.choice_buttons]
+        [button.config(state=DISABLED) for button in self.answer_choice_buttons]
 
         # Update the text of the results label after each answer
         self.question_results_label.config(text=f"Answers Correct: {self.questions_correct.get()} / "
-                                                f"Questions Answered: {self.questions_played.get()}")
+                                                f"Questions Answered: {self.questions_answered.get()}")
 
         # Enable the Next button after answering
-        if self.questions_played.get() < self.questions_wanted.get():
+        if self.questions_answered.get() < self.num_questions_wanted.get():
             self.next_button.config(state=NORMAL)
         else:
             # Disable the Next button and change its text.
@@ -287,7 +286,7 @@ class Play:
         if action == "get help":
             DisplayHelp(self)
         elif action == "get stats":
-            DisplayStats(self, self.questions_correct.get(), self.questions_played.get(), self.user_answers)
+            DisplayStats(self, self.questions_correct.get(), self.questions_answered.get(), self.user_response_history)
         else:
             self.close_play()
 
