@@ -1,0 +1,15 @@
+**** Quiz Statistics ****
+Generated: 2024_05_24
+Here are your quiz statistics:
+Correct answers:     4
+Total questions:     5
+Percentage:          80.00%
+Feedback:            Excellent!
+
+User Answers:
+Question 1:          Flag Shown: Bermuda                      User Answer: East Timor                  Result: Incorrect   
+Question 2:          Flag Shown: Sudan                        User Answer: Sudan                       Result: Correct     
+Question 3:          Flag Shown: Malaysia                     User Answer: Malaysia                    Result: Correct     
+Question 4:          Flag Shown: Saint Lucia                  User Answer: Saint Lucia                 Result: Correct     
+Question 5:          Flag Shown: Austria                      User Answer: Austria                     Result: Correct     
+
