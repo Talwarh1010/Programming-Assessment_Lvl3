@@ -21,27 +21,27 @@ class Flags:
         self.background_image = PhotoImage(file="flags2.png")
 
         # Create canvas to display the background image
-        background_canvas = Canvas(start_screen, width=720, height=540)
-        background_canvas.grid(row=1, column=0, sticky="nsew")
-        background_canvas.create_image(0, 0, image=self.background_image, anchor="nw")
+        self.background_canvas = Canvas(start_screen, width=720, height=540)
+        self.background_canvas.grid(row=1, column=0, sticky="nsew")
+        self.background_canvas.create_image(0, 0, image=self.background_image, anchor="nw")
 
         # Create a white rectangle as background for the main frame
-        background_canvas.create_rectangle(120, 180, 600, 420, fill="white")
+        self.background_canvas.create_rectangle(120, 180, 600, 420, fill="white")
 
         # Set up GUI frame
-        background_canvas.create_text(350, 220, text=" Guess The Flag!", font=("Arial", "45", "bold"))
-        background_canvas.create_text(360, 280,
-                                      text="\tWelcome to Guess The Flag!\nEnter the amount of questions you "
-                                           "would like to play", font=("Arial", "12"))
+        self.background_canvas.create_text(350, 220, text=" Guess The Flag!", font=("Arial", "45", "bold"))
+        self.background_canvas.create_text(360, 280,
+                                           text="\tWelcome to Guess The Flag!\nEnter the amount of questions you "
+                                                "would like to play", font=("Arial", "12"))
 
         # Entry widget for the user to input the number of questions
         self.question_entry = Entry(start_screen, font=("Arial", "20"))
-        background_canvas.create_window(365, 330, window=self.question_entry)
+        self.background_canvas.create_window(365, 330, window=self.question_entry)
 
-        # Button to start the
-        start_button = Button(start_screen, font=("Arial", "18"), width=21, text="Start!",
-                              command=self.validate_and_start)
-        background_canvas.create_window(369, 395, window=start_button)
+        # Button to start the flag quiz.
+        self.start_button = Button(start_screen, font=("Arial", "18"), width=21, text="Start!",
+                                   command=self.validate_and_start)
+        self.background_canvas.create_window(369, 395, window=self.start_button)
 
     def validate_and_start(self):
         # Retrieve the number of questions entered by the user
@@ -208,7 +208,7 @@ class Play:
             self.answer_choice_buttons[i]['text'] = flag[0]
 
         # resize flag image so that it fits in play GUI
-        flag_image = Image.open(f"Country_Flags/flag_images/flag_images/{self.question_flags[self.current_correct_answer][3]}")
+        flag_image = Image.open(f"Country_Flags/flag_images/{self.question_flags[self.current_correct_answer][3]}")
         flag_image = ImageTk.PhotoImage(flag_image)
         self.flag_label.config(image=flag_image)
         self.flag_label.image = flag_image
@@ -520,16 +520,18 @@ class DisplayStats:
     @staticmethod
     def check_filename(filename):
         problem = ""
-        # Regular expression to check filename is valid
+        # Regular expression to check filename is valid (Only allows alphabet,numbers, and underscores)
         valid_char = "[A-Za-z0-9_]"
         # Iterate through filename and check each character
-        for letter in filename:
-            if re.match(valid_char, letter):
+        for character in filename:
+            if re.match(valid_char, character):
                 continue
-            elif letter == " ":
+                # If there is spaces in text file name, then display error
+            elif character == " ":
                 problem = "Sorry, no spaces allowed."
+                # If any other invalid characters are used, display error
             else:
-                problem = f"Sorry, no '{letter}'s allowed."
+                problem = f"Sorry, no '{character}'s allowed."
             break
         return problem
 
@@ -576,10 +578,10 @@ class DisplayStats:
 
 
 if __name__ == "__main__":
-    root = Tk()
-    root.geometry("720x540")
-    pygame.mixer.init()
-    root.title("Guess The Flag!")
-    flags_app = Flags(root)  # Pass start_window as an argument
+    root = Tk()  # Create tk window
+    root.geometry("720x540")  # Size of start GUI.
+    pygame.mixer.init()  # For music
+    root.title("Guess The Flag!")  # Change title of GUI to this
+    flags_app = Flags(root)  # Use flag window to play music
     flags_app.play_music()  # Play background music
     root.mainloop()
