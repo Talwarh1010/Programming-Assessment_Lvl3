@@ -4,10 +4,6 @@ from functools import partial  # To prevent unwanted windows
 import csv
 import random
 from PIL import Image, ImageTk
-from tkinter import messagebox
-from datetime import date
-import re
-
 
 class Flags:
     def __init__(self):
@@ -15,7 +11,7 @@ class Flags:
 
     def to_play(self, num_questions):
         Play(5)  # Create an instance of Play with the entered number of rounds
-        root.withdraw()  # Hide root window (i.e., hide rounds choice window).
+        root.withdraw()  # Hide start_window window (i.e., hide rounds choice window).
 
     def play_music(self):
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
@@ -24,38 +20,52 @@ class Flags:
 
 class Play:
     def __init__(self, how_many):
+        # Create a new window for playing the game
         self.play_box = Toplevel(width=600, height=400)
+        # Define behavior when the window's close button is clicked
         self.play_box.protocol('WM_DELETE_WINDOW', partial(self.close_play))
+        # Variable to store the number of questions to be asked
         self.questions_wanted = IntVar()
         self.questions_wanted.set(how_many)
+        # Variable to keep track of the number of questions played
         self.questions_played = IntVar()
         self.questions_played.set(0)
+        # Variable to keep track of the number of correct answers
         self.questions_correct = IntVar()
         self.questions_correct.set(0)
+        # List to store user's answers
         self.user_answers = []
 
+        # Load all flags from the CSV file
         self.all_flags = self.get_all_flags()
+        # Create a frame to hold the game elements
         self.play_frame = Frame(self.play_box, padx=10, pady=10)
         self.play_frame.grid()
-        self.update_round_heading()  # Update round heading initially
+        # Update the round heading initially
+        self.update_round_heading()
 
+        # Instructions for the game
         instructions = "Look at the flag and choose one of the countries below. When you choose " \
                        "a country, the results of the question will be revealed."
 
+        # Label to display instructions
         self.instructions_label = Label(self.play_frame, text=instructions,
                                         wraplength=350, justify="left")
         self.instructions_label.grid(row=1)
+        # Label to display the flag image
         self.flag_label = Label(self.play_frame)
         self.flag_label.grid(row=2)
 
         self.button_flag_list = []
 
-        # create colour buttons (in choice_frame)!
+        # Frame to hold the choice buttons
         self.choice_frame = Frame(self.play_frame)
         self.choice_frame.grid(row=4)
         self.choice_button_ref = []
+        # Frame to hold control buttons
         self.control_frame = Frame(self.play_frame)
         self.control_frame.grid(row=6)
+        # Control buttons configuration
         control_buttons = [
             ["#CC6600", "Help", "get help"],
             ["#004C99", "Statistics", "get stats"],
@@ -63,6 +73,7 @@ class Play:
 
         self.control_button_ref = []
 
+        # Create control buttons
         for item in range(0, 3):
             self.make_control_button = Button(self.control_frame,
                                               fg="#FFFFFF",
@@ -75,10 +86,11 @@ class Play:
 
             self.control_button_ref.append(self.make_control_button)
 
-        # disable help button
+        # Disable help button initially
         self.to_help_btn = self.control_button_ref[0]
         self.to_stats_btn = self.control_button_ref[1]
         self.to_stats_btn.config(state=DISABLED)
+        # Create choice buttons
         self.choice_buttons = []
         for item in range(0, 4):
             self.choice_button = Button(self.choice_frame, text="",
@@ -88,16 +100,19 @@ class Play:
             self.choice_button.grid(row=item // 2,
                                     column=item % 2,
                                     padx=5, pady=5)
+        # Load the question flags
         self.get_question_flags()
 
+        # Frame to display scores and next question button
         self.score_frame = Frame(self.play_frame)
         self.score_frame.grid(row=5, pady=5)
+        # Label to display round results
         self.round_results_label = Label(self.score_frame, text=f"Answers Correct: Questions Answered:",
                                          width=36, bg="#FFF2CC",
                                          font=("Arial", 10),
                                          pady=5)
         self.round_results_label.grid(row=0, column=0, padx=5)
-
+        # Button to move to the next question
         self.next_button = Button(self.score_frame, text="Next Question",
                                   fg="#FFFFFF", bg="#008BFC",
                                   font=("Arial", 11, "bold"),
@@ -106,6 +121,7 @@ class Play:
         self.questions_wanted = 5
 
     def update_round_heading(self):
+        # Update round heading
         rounds_heading = f"Choose - Question 1 of 5"
         self.choose_heading = Label(self.play_frame, text=rounds_heading,
                                     font=("Arial", "16", "bold")
@@ -113,31 +129,33 @@ class Play:
         self.choose_heading.grid(row=0)
 
     def close_play(self):
-        # reshow root (ie: choose rounds) and end current
-        # game / allow new game to start
+        # Close the play window and show the start window
         root.deiconify()
         self.play_box.destroy()
 
     def get_all_flags(self):
+        # Load all flags from the CSV file
         with open("Country_Flags/country_flags.csv", "r", encoding="utf-8") as file:
             var_all_flags = list(csv.reader(file, delimiter=","))
         file.close()
-        # removes first entry in list (ie: the header row).
+        # Remove the header row
         return var_all_flags
 
     def get_question_flags(self):
+        # Get flags for the current question
         self.question_flags = random.sample(self.all_flags, 4)
         self.current_correct_answer = random.randint(0, 3)
 
+        # Set the text for choice buttons
         for i, flag in enumerate(self.question_flags):
             self.choice_buttons[i]['text'] = flag[0]
 
+        # Load the flag image for the current question
         flag_image = Image.open(f"Country_Flags/flag_images/{self.question_flags[self.current_correct_answer][3]}")
         resized_flag_image = flag_image.resize((390, 250), Image.LANCZOS)
         resized_image = ImageTk.PhotoImage(resized_flag_image)
         self.flag_label.config(image=resized_image)
         self.flag_label.image = resized_image
-
         # Create the clue text outside the loop to avoid overlap
         self.clue_frame = Frame(self.play_frame)
         self.clue_frame.grid(row=3)
@@ -217,6 +235,6 @@ class Play:
 if __name__ == "__main__":
     root = Tk()
     root.title("Guess The Flag!")
-    Play(5)  # Pass root as an argument
+    Play(5)  # Pass start_window as an argument
 
     root.mainloop()

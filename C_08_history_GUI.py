@@ -5,33 +5,43 @@ import pygame
 
 class Flags:
     def __init__(self):
-        self.to_play(5)
+        # Initialize the Flags class
+        self.to_play(5)  # Call the to_play method with 5 as the number of questions
 
     def to_play(self, num_questions):
+        # Initialize the game with the specified number of questions
         Play(5)  # Create an instance of Play with the entered number of rounds
-        root.withdraw()  # Hide root window (i.e., hide rounds choice window).
+        root.withdraw()  # Hide start_window window (i.e., hide rounds choice window).
 
     def play_music(self):
+        # Load and play background music
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
         pygame.mixer.music.play(loops=100)
 
 
 class Play:
     def __init__(self, how_many):
+        # Initialize the play window
         self.play_box = Toplevel(width=600, height=400)
 
+        # Create a frame to contain play elements
         self.play_frame = Frame(self.play_box, padx=10, pady=10)
         self.play_frame.grid()
 
+        # Create control buttons frame
         self.control_frame = Frame(self.play_frame)
         self.control_frame.grid(row=6)
+
+        # Define control buttons
         control_buttons = [
             ["#CC6600", "Help", "get help"],
             ["#004C99", "Statistics", "get stats"],
-            ["#808080", "Start Over", "start over"]]
+            ["#808080", "Start Over", "start over"]
+        ]
 
         self.control_button_ref = []
 
+        # Create and place control buttons
         for item in range(0, 3):
             self.make_control_button = Button(self.control_frame,
                                               fg="#FFFFFF",
@@ -40,31 +50,31 @@ class Play:
                                               width=11, font=("Arial", "12", "bold"),
                                               command=lambda i=item: self.to_do(control_buttons[i][2]))
 
-            self.make_control_button.grid(row=0, column=item, padx=5, pady=5)  # Update row to 0
+            self.make_control_button.grid(row=0, column=item, padx=5, pady=5)
 
             self.control_button_ref.append(self.make_control_button)
 
-        # disable help button
+        # Disable help button
         self.to_help_btn = self.control_button_ref[0]
 
     def close_play(self):
-        # reshow root (ie: choose rounds) and end current
-        # game / allow new game to start
+        # Close the play window and restore the main window
         root.deiconify()
         self.play_box.destroy()
 
     def to_do(self, action):
+        # Execute actions based on button clicks
         if action == "get help":
-            pass
+            pass  # Placeholder for displaying help
         elif action == "get stats":
-            DisplayStats()
+            DisplayStats()  # Display statistics
         else:
-            self.close_play()
+            self.close_play()  # Close the play window
 
 
 class DisplayStats:
     def __init__(self):
-        # Other initialization code remains the same...
+        # Retrieve data for game statistics
         result_data = ["Correct", "Wrong", "Correct", "Correct", "Wrong", "Correct",
                        "Wrong", "Wrong", "Correct", "Correct"]
 
@@ -77,41 +87,38 @@ class DisplayStats:
             , ('Moldova', 'Moldova'), ('Montenegro', 'Montenegro'), ('Andorra', 'Andorra'),
                         ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast')]
 
-        # setup dialogue box and background colour
+        # Setup dialogue box for displaying statistics
         stats_bg_colour = "#DAE8FC"
         self.stats_box = Toplevel()
-        # disable stats button
-        # If users press cross at top, closes stats and
-        # 'releases' stats button
-        self.stats_box.protocol('WM_DELETE_WINDOW',
-                                partial(self.close_stats))
-        self.stats_frame = Frame(self.stats_box, width=700,
-                                 height=400,
-                                 bg=stats_bg_colour)
+        self.stats_box.protocol('WM_DELETE_WINDOW', self.close_stats)
+
+        # Create frame for statistics display
+        self.stats_frame = Frame(self.stats_box, width=700, height=400, bg=stats_bg_colour)
         self.stats_frame.grid()
-        self.stats_heading_label = Label(self.stats_frame,
-                                         bg=stats_bg_colour,
-                                         text="Statistics",
+
+        # Create label for statistics heading
+        self.stats_heading_label = Label(self.stats_frame, bg=stats_bg_colour, text="Statistics",
                                          font=("Arial", "14", "bold"))
         self.stats_heading_label.grid(row=0, columnspan=4, pady=5)
 
+        # Display text explaining statistics
         stats_text = "Here are your game statistics"
-        self.stats_text_label = Label(self.stats_frame, bg=stats_bg_colour,
-                                      text=stats_text, wrap=350,
+        self.stats_text_label = Label(self.stats_frame, bg=stats_bg_colour, text=stats_text, wrap=350,
                                       justify="left")
-
         self.stats_text_label.grid(row=1, columnspan=4, padx=10, pady=5)
+
+        # Create frame for displaying data
         self.data_frame = Frame(self.stats_frame, bg=stats_bg_colour, borderwidth=1, relief="solid")
         self.data_frame.grid(row=2, columnspan=4, padx=10, pady=10)
 
-        # Create labels for headings and corresponding information
+        # Create headings for data table
         headings = ["Question Number", "Flag Shown", "User Answer", "Result"]
         for i, heading in enumerate(headings):
             heading_label = Label(self.data_frame, text=heading, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour,
                                   width=20, height=2, anchor="w")
             heading_label.grid(row=0, column=i, padx=5, pady=5, sticky="w")
 
-        # Populate the data for each question
+        # Populate data table with statistics
         for i, answer in enumerate(user_answers):
             question_number = i + 1
             flag_shown = answer[0]
@@ -136,16 +143,16 @@ class DisplayStats:
                                  width=20, anchor="w")
             result_label.grid(row=i + 1, column=3, padx=5, pady=5, sticky="w")
 
+            # Create frame for the buttons and filename entry
         self.numbers_frame = Frame(self.stats_frame, bg=stats_bg_colour, borderwidth=1, relief="solid")
         self.numbers_frame.grid(row=3, column=0, padx=10, pady=10)
 
         self.filename_entry_frame = Frame(self.stats_frame, bg=stats_bg_colour, relief="solid")
         self.filename_entry_frame.grid(row=3, column=2, columnspan=5, padx=10, pady=10)
 
-        save_text = "Either choose a custom file name (and push " \
-                    "<Export>) or simply push <Export> to save your " \
-                    "statistics in a text file. If the " \
-                    "filename already exists, it will be overwritten!"
+        # Display instructions for saving statistics
+        save_text = "Either choose a custom file name (and push <Export>) or simply push <Export> to save your " \
+                    "statistics in a text file. If the filename already exists, it will be overwritten!"
         self.save_instructions_label = Label(self.filename_entry_frame,
                                              text=save_text,
                                              wraplength=300,
@@ -153,12 +160,16 @@ class DisplayStats:
                                              padx=10, pady=10)
         self.save_instructions_label.grid(row=2, column=4)
 
+        # Entry widget for custom filename
         self.filename_entry = Entry(self.filename_entry_frame,
                                     font=("Arial", "23"),
                                     bg="#ffffff", width=18)
         self.filename_entry.grid(row=4, column=4, padx=10, pady=10)
+
+        # Export button to save statistics
         self.button_frame = Frame(self.stats_frame, bg=stats_bg_colour)
-        self.button_frame.grid(row=4, columnspan=5, )
+        self.button_frame.grid(row=4, columnspan=5)
+
         self.export_button = Button(self.button_frame,
                                     font=("Arial", "12", "bold"),
                                     text="Export", bg="#004C99",
@@ -166,6 +177,7 @@ class DisplayStats:
                                     command="")
         self.export_button.grid(row=6, column=3, padx=5, pady=5)
 
+        # Dismiss button to close the statistics window
         self.dismiss_button = Button(self.button_frame,
                                      font=("Arial", "12", "bold"),
                                      text="Dismiss", bg="#CC6600",
@@ -173,14 +185,15 @@ class DisplayStats:
                                      command="")
         self.dismiss_button.grid(row=6, column=4, padx=5, pady=5)
 
-    def close_stats(self, partner):
-        # Put stats button back to normal...
-        partner.to_stats_btn.config(state=NORMAL)
+    def close_stats(self):
+        # Close the statistics window
         self.stats_box.destroy()
+
+    # Main program starts here
 
 
 if __name__ == "__main__":
     root = Tk()
     root.title("Guess the Flag!")
-    Play(10)
+    Play(10)  # Initialize the game with 10 questions
     root.mainloop()
