@@ -1,11 +1,9 @@
-import tkinter
 from tkinter import *
 import pygame
 from functools import partial  # To prevent unwanted windows
 import csv
 import random
 from PIL import Image, ImageTk
-from tkinter import messagebox
 from datetime import date
 import re
 
@@ -168,7 +166,7 @@ class Play:
         self.clue_frame = Frame(self.play_frame)
         self.clue_frame.grid(row=3)
 
-        self.clue_label = Label(self.clue_frame, text="", wrap=350)
+        self.clue_label = Label(self.clue_frame, text="", wraplength=350)
         self.clue_label.grid(row=3)
         clue = f"                Clue: The capital is {self.question_flags[self.current_correct_answer][1]}!                       "
         self.clue_label.config(text=clue)
@@ -206,7 +204,7 @@ class Play:
 
             # Update the background color of the results label to green
             self.round_results_label.config(bg="#4CAF50", text=f"Answers Correct: {self.questions_correct.get()} / "
-                                                               f"Questions Answered: {self.questions_played.get()}")  # Green color
+                                                               f"Questions Answered: {self.questions_played.get()}")
 
             self.choice_buttons[self.current_correct_answer].config(bg="#4CAF50")  # Green color
         else:
@@ -270,7 +268,7 @@ proceed to the next question by clicking 'Next Question'.\nHave fun testing your
 Choose carefully.""")
 
         self.help_text_label = Label(self.help_frame, bg=background,
-                                     text=help_text, wrap=350,
+                                     text=help_text, wraplength=350,
                                      justify="left")
         self.help_text_label.grid(row=1, padx=10)
 
@@ -317,7 +315,7 @@ class DisplayStats:
 
         stats_text = "Here are your game statistics"
         self.stats_text_label = Label(self.stats_frame, bg=stats_bg_colour,
-                                      text=stats_text, wrap=350,
+                                      text=stats_text, wraplength=350,
                                       justify="left")
         self.stats_text_label.grid(row=1, columnspan=4, padx=10, pady=5)
         self.data_frame = Frame(self.stats_frame, bg=stats_bg_colour, borderwidth=1, relief="solid")

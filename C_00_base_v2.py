@@ -43,6 +43,7 @@ class Flags:
                                    command=self.validate_and_start)
         self.background_canvas.create_window(369, 395, window=self.start_button)
 
+    # Function to validate the number of questions chosen by the user
     def validate_and_start(self):
         # Retrieve the number of questions entered by the user
         num_questions = self.question_entry.get()
@@ -198,6 +199,7 @@ class Play:
         # removes first entry in list (ie: the header row).
         return var_all_flags
 
+    # Function to display flag question
     def get_question_flags(self):
         # Randomly select flags for the current question
         self.question_flags = random.sample(self.all_flags, 4)
@@ -221,6 +223,7 @@ class Play:
                                 text=f"Clue: The capital is {self.question_flags[self.current_correct_answer][1]}")
         self.clue_label.grid(row=3)
 
+    # Function to create next question in the quiz (headings, new question, colours, buttons etc)
     def next_question(self):
         # Load next question if not reached the desired number of questions
         self.clue_label.config(text="")
@@ -290,6 +293,7 @@ class Play:
         else:
             self.close_play()
 
+    # For dismiss button or cross at the top right.
     def close_play(self):
         # Close the play window and show the start window
         root.deiconify()
