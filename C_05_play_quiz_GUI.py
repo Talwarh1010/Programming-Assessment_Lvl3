@@ -5,6 +5,7 @@ import csv
 import random
 from PIL import Image, ImageTk
 
+
 class Flags:
     def __init__(self):
         self.to_play(5)

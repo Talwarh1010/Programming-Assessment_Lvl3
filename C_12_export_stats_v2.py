@@ -135,9 +135,10 @@ class DisplayStats:
                                  width=20, anchor="w")
             result_label.grid(row=i + 1, column=3, padx=5, pady=5, sticky="w")
 
+        # Create frame to hold percentages, scores etc
         self.numbers_frame = Frame(self.stats_frame, bg=stats_bg_colour, borderwidth=1, relief="solid")
         self.numbers_frame.grid(row=3, column=0, padx=10, pady=10)
-
+        # Row names for table
         row_names = ["Correct answers", "Total questions", "Percentage", "Feedback"]
         data_values = [correct_numbers, questions_answered,
                        "{:.2f}%".format(
@@ -154,6 +155,7 @@ class DisplayStats:
                                width=20, height=1, anchor="w")
             data_label.grid(row=i, column=1, padx=5, pady=5, sticky="w")
 
+        # Frame for all export stuff such as entry widget, export instructions etc
         self.filename_entry_frame = Frame(self.stats_frame, bg=stats_bg_colour, relief="solid")
         self.filename_entry_frame.grid(row=3, column=2, columnspan=5, padx=10, pady=10)
 
@@ -188,6 +190,7 @@ class DisplayStats:
                                      command=self.close_stats)
         self.dismiss_button.grid(row=6, column=4, padx=5, pady=5)
 
+    # Create text file based on filename
     def make_file(self):
         # Retrieve filename
         filename = self.filename_entry.get()
@@ -214,10 +217,12 @@ class DisplayStats:
             self.save_instructions_label.config(text=error_message, fg="dark red", bg="#DAE8FC")
             self.filename_entry.config(bg="#FF7F7F")
 
+    # Get today's date
     def get_date(self):
         today = date.today()
         return today.strftime("%Y_%m_%d")
 
+    # Function to check filename of text file
     @staticmethod
     def check_filename(filename):
         problem = ""
@@ -234,6 +239,7 @@ class DisplayStats:
             break
         return problem
 
+    # Function to write all data to a text file
     def write_to_file(self, filename):
         # Retrieve data
         questions_answered = 10
@@ -267,7 +273,6 @@ class DisplayStats:
             file.write(sub_heading + "\n")
             file.write(data + "\n")
 
-    # Closes stats dialogue (used by button and x at top of dialogue)
     # Closes stats dialogue (used by button and x at top of dialogue)
     def close_stats(self):
         # Put stats button back to normal...

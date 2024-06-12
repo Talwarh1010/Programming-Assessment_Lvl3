@@ -2,16 +2,11 @@ from datetime import date
 import re
 
 
+# Function to create a filename for the quiz results file.
 def make_file(filename):
-    """
-    Function to create a filename for the quiz results file.
-
-    Parameters:
-        filename (str): The proposed filename entered by the user.
-
-    Returns:
-        str: The validated and formatted filename for the quiz results file.
-    """
+    # Checks the proposed filename entered by the user.
+    # Returns the validated and formatted filename for the quiz results file.
+    # Today's date
     date_part = get_date()
 
     # Check if filename is empty
@@ -35,27 +30,14 @@ def make_file(filename):
     return filename
 
 
+# Function to get the current date and format it.
 def get_date():
-    """
-    Function to get the current date and format it.
-
-    Returns:
-        str: The formatted current date.
-    """
     today = date.today()
     return today.strftime("%Y_%m_%d")
 
 
+# Function to check if a filename contains valid characters.
 def check_filename(filename):
-    """
-    Function to check if a filename contains valid characters.
-
-    Parameters:
-        filename (str): The proposed filename entered by the user.
-
-    Returns:
-        str: An error message if the filename contains invalid characters, otherwise an empty string.
-    """
     problem = ""
     # Regular expression to check filename is valid
     valid_char = "[A-Za-z0-9_]"
@@ -63,6 +45,7 @@ def check_filename(filename):
     for letter in filename:
         if re.match(valid_char, letter):
             continue
+        # An error message if the filename contains invalid characters, otherwise an empty string.
         elif letter == " ":
             problem = "Sorry, no spaces allowed."
         else:

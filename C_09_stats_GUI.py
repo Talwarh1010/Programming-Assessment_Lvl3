@@ -2,6 +2,7 @@ from tkinter import *
 from functools import partial
 import pygame
 
+
 class Flags:
     def __init__(self):
         # Initialize the game with 5 questions
@@ -17,6 +18,7 @@ class Flags:
         # Load and play background music
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
         pygame.mixer.music.play(loops=100)
+
 
 class Play:
     def __init__(self, how_many):
@@ -69,6 +71,7 @@ class Play:
             # Close the game window
             self.close_play()
 
+
 class DisplayStats:
     def __init__(self, partner):
         self.partner = partner  # Store the instance of Play class
@@ -78,7 +81,8 @@ class DisplayStats:
         correct_numbers = 6
         user_answers = [('Sudan', 'Qatar'), ('\ufeffAruba', '\ufeffAruba'), ('Somalia', 'Suriname'), ('Libya', 'Kosovo')
             , ('Moldova', 'Moldova'), ('Montenegro', 'Montenegro'), ('Andorra', 'Andorra'),
-                        ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast'), ('China', 'Vietnam')]
+                        ('Seychelles', 'Marshall Islands'), ('Cameroon', 'Cameroon'), ('Ivory Coast', 'Ivory Coast'),
+                        ('China', 'Vietnam')]
 
         # Setup dialogue box and background color
         stats_bg_colour = "#DAE8FC"
@@ -90,14 +94,16 @@ class DisplayStats:
         self.stats_frame.grid()
 
         # Add heading for statistics
-        self.stats_heading_label = Label(self.stats_frame, bg=stats_bg_colour, text="Statistics", font=("Arial", "14", "bold"))
+        self.stats_heading_label = Label(self.stats_frame, bg=stats_bg_colour, text="Statistics",
+                                         font=("Arial", "14", "bold"))
         self.stats_heading_label.grid(row=0, columnspan=4, pady=5)
 
         # Add text to inform about game statistics
         stats_text = "Here are your game statistics"
         self.stats_text_label = Label(self.stats_frame, bg=stats_bg_colour, text=stats_text, wrap=350, justify="left")
         if len(user_answers) > 10:
-            self.stats_text_label.config(text="Here are your game statistics (Note: The question history only shows your first 10 questions)")
+            self.stats_text_label.config(
+                text="Here are your game statistics (Note: The question history only shows your first 10 questions)")
         self.stats_text_label.grid(row=1, columnspan=4, padx=10, pady=5)
 
         # Create a frame for displaying question data
@@ -107,7 +113,8 @@ class DisplayStats:
         # Add labels for column headings
         headings = ["Question Number", "Flag Shown", "User Answer", "Result"]
         for i, heading in enumerate(headings):
-            heading_label = Label(self.data_frame, text=heading, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour, width=20, height=2, anchor="w")
+            heading_label = Label(self.data_frame, text=heading, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour,
+                                  width=20, height=2, anchor="w")
             heading_label.grid(row=0, column=i, padx=5, pady=5, sticky="w")
 
         # Populate data for each question
@@ -118,16 +125,20 @@ class DisplayStats:
             result = "Correct" if user_answer == flag_shown else "Incorrect"
 
             # Display data for each question
-            question_number_label = Label(self.data_frame, text=question_number, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour, width=20, anchor="w")
+            question_number_label = Label(self.data_frame, text=question_number,
+                                          bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour, width=20, anchor="w")
             question_number_label.grid(row=i + 1, column=0, padx=5, pady=5, sticky="w")
 
-            flag_shown_label = Label(self.data_frame, text=flag_shown, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour, width=20, anchor="w")
+            flag_shown_label = Label(self.data_frame, text=flag_shown, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour,
+                                     width=20, anchor="w")
             flag_shown_label.grid(row=i + 1, column=1, padx=5, pady=5, sticky="w")
 
-            user_answer_label = Label(self.data_frame, text=user_answer, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour, width=20, anchor="w")
+            user_answer_label = Label(self.data_frame, text=user_answer,
+                                      bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour, width=20, anchor="w")
             user_answer_label.grid(row=i + 1, column=2, padx=5, pady=5, sticky="w")
 
-            result_label = Label(self.data_frame, text=result, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour, width=20, anchor="w")
+            result_label = Label(self.data_frame, text=result, bg="#C9D6E8" if i % 2 == 0 else stats_bg_colour,
+                                 width=20, anchor="w")
             result_label.grid(row=i + 1, column=3, padx=5, pady=5, sticky="w")
 
         # Create a frame for displaying numeric statistics

@@ -1,4 +1,3 @@
-
 from tkinter import *
 import pygame
 from functools import partial  # To prevent unwanted windows
@@ -14,6 +13,7 @@ class Flags:
         Play(5)  # Create an instance of Play with the entered number of rounds
         root.withdraw()  # Hide start_window window (i.e., hide rounds choice window).
 
+    # Function to play music
     def play_music(self):
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
         pygame.mixer.music.play(loops=100)
@@ -69,7 +69,6 @@ class Play:
 class DisplayStats:
     def __init__(self, partner):
         self.partner = partner  # Store the instance of Play class
-
         questions_answered = 10
         correct_numbers = 6
         user_answers = [('Sudan', 'Qatar'), ('Aruba', 'Aruba'), ('Somalia', 'Suriname'), ('Libya', 'Kosovo')
@@ -235,6 +234,7 @@ class DisplayStats:
             break
         return problem
 
+    # Function that displays all data to a text file
     def write_to_file(self, filename):
         # Retrieve data
         questions_answered = 10

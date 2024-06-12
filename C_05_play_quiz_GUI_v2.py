@@ -4,9 +4,6 @@ from functools import partial  # To prevent unwanted windows
 import csv
 import random
 from PIL import Image, ImageTk
-from tkinter import messagebox
-from datetime import date
-import re
 
 
 class Flags:

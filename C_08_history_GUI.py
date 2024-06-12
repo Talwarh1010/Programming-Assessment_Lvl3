@@ -1,5 +1,4 @@
 from tkinter import *
-from functools import partial
 import pygame
 
 
@@ -11,7 +10,7 @@ class Flags:
     def to_play(self, num_questions):
         # Initialize the game with the specified number of questions
         Play(5)  # Create an instance of Play with the entered number of rounds
-        root.withdraw()  # Hide start_window window (i.e., hide rounds choice window).
+        root.withdraw()  # Hide start_window window (i.e., hide choose question window).
 
     def play_music(self):
         # Load and play background music

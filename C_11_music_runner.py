@@ -2,13 +2,9 @@ from tkinter import *
 import pygame
 
 
+# Function to play background music for the quiz.
+# This function loads the music file and plays it in a loop.
 def play_music():
-    """
-    Function to play background music for the game.
-
-    This function loads the music file and plays it in a loop.
-
-    """
     pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
     pygame.mixer.music.play(loops=100)
 
