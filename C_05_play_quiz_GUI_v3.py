@@ -6,14 +6,13 @@ import random
 from PIL import Image, ImageTk
 
 
-
 class Flags:
     def __init__(self):
         self.to_play(5)
 
     def to_play(self, num_questions):
         Play(5)  # Create an instance of Play with the entered number of rounds
-        root.withdraw()  # Hide start_window window (i.e., hide rounds choice window).
+        root.withdraw()  # Hide start_window window (i.e., hide question choice window).
 
     def play_music(self):
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
@@ -202,7 +201,6 @@ class Play:
         else:
             # Disable the Next button
             self.next_button.config(state=DISABLED, bg="#808080", text="Goodbye")
-
 
     def to_do(self, action):
         if action == "get help":
