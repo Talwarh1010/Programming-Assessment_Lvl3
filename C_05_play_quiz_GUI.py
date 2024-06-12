@@ -12,7 +12,7 @@ class Flags:
 
     def to_play(self, num_questions):
         Play(5)  # Create an instance of Play with the entered number of rounds
-        root.withdraw()  # Hide start_window window (i.e., hide rounds choice window).
+        root.withdraw()  # Hide start_window window (i.e., hide question choice window).
 
     def play_music(self):
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
@@ -21,7 +21,7 @@ class Flags:
 
 class Play:
     def __init__(self, how_many):
-        # Create a new window for playing the game
+        # Create a new window for playing the quiz
         self.play_box = Toplevel(width=600, height=400)
         # Define behavior when the window's close button is clicked
         self.play_box.protocol('WM_DELETE_WINDOW', partial(self.close_play))
@@ -39,13 +39,13 @@ class Play:
 
         # Load all flags from the CSV file
         self.all_flags = self.get_all_flags()
-        # Create a frame to hold the game elements
+        # Create a frame to hold the quiz elements
         self.play_frame = Frame(self.play_box, padx=10, pady=10)
         self.play_frame.grid()
-        # Update the round heading initially
+        # Update the question heading initially
         self.update_round_heading()
 
-        # Instructions for the game
+        # Instructions for the quiz
         instructions = "Look at the flag and choose one of the countries below. When you choose " \
                        "a country, the results of the question will be revealed."
 

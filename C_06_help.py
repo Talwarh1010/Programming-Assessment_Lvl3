@@ -5,13 +5,13 @@ from functools import partial  # To prevent unwanted windows
 
 class Flags:
     def __init__(self):
-        # Initialize the game with 5 questions
+        # Initialize the quiz with 5 questions
         self.to_play(5)
 
     def to_play(self, num_questions):
         # Start the game with the specified number of questions
-        Play(5)  # Create an instance of Play with the entered number of rounds
-        root.withdraw()  # Hide start_window window (i.e., hide rounds choice window).
+        Play(5)  # Create an instance of Play with the entered number of questions
+        root.withdraw()  # Hide start_window window (i.e., hide question choice window).
 
     def play_music(self):
         # Load and play background music
@@ -24,7 +24,7 @@ class Play:
         # Initialize the play window
         self.play_box = Toplevel(width=600, height=400)
 
-        # Create the main frame for the game
+        # Create the main frame for the quiz
         self.play_frame = Frame(self.play_box, padx=10, pady=10)
         self.play_frame.grid()
 

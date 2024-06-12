@@ -5,13 +5,13 @@ import pygame
 
 class Flags:
     def __init__(self):
-        # Initialize the game with 5 questions
+        # Initialize the quiz with 5 questions
         self.to_play(5)
 
     def to_play(self, num_questions):
         # Create an instance of Play with the entered number of questions
         Play(num_questions)
-        # Hide the main window (rounds choice window)
+        # Hide the main window (question choice window)
         root.withdraw()
 
     def play_music(self):
@@ -22,7 +22,7 @@ class Flags:
 
 class Play:
     def __init__(self, how_many):
-        # Create a new window for the game
+        # Create a new window for the quiz
         self.play_box = Toplevel(width=600, height=400)
         self.play_frame = Frame(self.play_box, padx=10, pady=10)
         self.play_frame.grid()
@@ -40,7 +40,7 @@ class Play:
 
         self.control_button_ref = []
 
-        # Create control buttons and bind actions to them
+        # Create control buttons
         for item in range(0, 3):
             self.make_control_button = Button(self.control_frame,
                                               fg="#FFFFFF",
@@ -55,7 +55,7 @@ class Play:
         self.to_help_btn = self.control_button_ref[0]
 
     def close_play(self):
-        # Show the main window (rounds choice window) and destroy the game window
+        # Show the main window (question choice window) and destroy the quiz play window
         root.deiconify()
         self.play_box.destroy()
 
@@ -68,7 +68,7 @@ class Play:
             self.control_button_ref[1].config(state=DISABLED)
             DisplayStats(self)
         else:
-            # Close the game window
+            # Close the quiz window
             self.close_play()
 
 
@@ -98,7 +98,7 @@ class DisplayStats:
                                          font=("Arial", "14", "bold"))
         self.stats_heading_label.grid(row=0, columnspan=4, pady=5)
 
-        # Add text to inform about game statistics
+        # Add text to inform about quiz statistics
         stats_text = "Here are your game statistics"
         self.stats_text_label = Label(self.stats_frame, bg=stats_bg_colour, text=stats_text, wrap=350, justify="left")
         if len(user_answers) > 10:

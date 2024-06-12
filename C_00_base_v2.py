@@ -119,10 +119,11 @@ class Play:
         self.flag_label = Label(self.play_frame)
         self.flag_label.grid(row=2)
 
-        # Create buttons for flag choices
+        # Create frame for flag choices
         self.choice_frame = Frame(self.play_frame)
         self.choice_frame.grid(row=4)
         self.choice_button_ref = []
+        # Create frame for control buttons
         self.control_frame = Frame(self.play_frame)
         self.control_frame.grid(row=6)
         # Create list for control buttons. Info includes colour, text and function name.
@@ -389,6 +390,7 @@ class DisplayStats:
             self.stats_text_label.config(text="Here are your quiz statistics (Note: The question history only shows "
                                               "your first 10 questions")
         self.stats_text_label.grid(row=1, columnspan=4, padx=10, pady=5)
+        # Create frame to display question history in
         self.data_frame = Frame(self.stats_frame, bg=stats_bg_colour, borderwidth=1, relief="solid")
         self.data_frame.grid(row=2, columnspan=4, padx=10, pady=10)
 
@@ -491,13 +493,14 @@ class DisplayStats:
         # Retrieve filename
         filename = self.filename_entry.get()
         filename_ok = ""
+        # Today's date used if filename entry is left blank
         date_part = self.get_date()
         if filename == "":
             # Get date and create default filename
             filename = f"{date_part}_flagquiz"
 
         else:
-            # Check that filename is valid
+            # Check if that filename is valid
             filename_ok = self.check_filename(filename)
 
         if filename_ok == "":

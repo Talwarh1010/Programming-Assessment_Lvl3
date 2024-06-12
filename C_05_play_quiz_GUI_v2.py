@@ -12,7 +12,7 @@ class Flags:
 
     def to_play(self, num_questions):
         Play(5)  # Create an instance of Play with the entered number of rounds
-        root.withdraw()  # Hide start_window window (i.e., hide rounds choice window).
+        root.withdraw()  # Hide start_window window (i.e., hide question choice window).
 
     def play_music(self):
         pygame.mixer.music.load("2 (online-audio-converter.com).mp3")
@@ -47,7 +47,7 @@ class Play:
 
         self.button_flag_list = []
 
-        # create colour buttons (in choice_frame)!
+        # create flag buttons (in choice_frame)!
         self.choice_frame = Frame(self.play_frame)
         self.choice_frame.grid(row=4)
         self.choice_button_ref = []
@@ -111,7 +111,6 @@ class Play:
 
     def close_play(self):
         # reshow start_window (ie: choose rounds) and end current
-        # game / allow new game to start
         root.deiconify()
         self.play_box.destroy()
 

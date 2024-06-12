@@ -75,7 +75,7 @@ class Play:
 
         self.button_flag_list = []
 
-        # create colour buttons (in choice_frame)!
+        # create flag buttons (in choice_frame)!
         self.choice_frame = Frame(self.play_frame)
         self.choice_frame.grid(row=4)
         self.choice_button_ref = []
